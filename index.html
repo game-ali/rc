@@ -446,7 +446,7 @@ function updateLevel() {
 }
 
 function increaseTime() {
-    timeElapsed += 1;
+    timeElapsed += 5;
     updateTimer();
 }
 
@@ -616,14 +616,14 @@ playerImg.onload = () => {
     update();
 };
 
-let videos = ["v6.mp4", "v7.mp6", "v6.mp4"];//add video here 
+let videos = ["v6.mp4", "v6.mp6", "v6.mp4"];//add video here 
 let videoIndex = 0;
 const notificationElement = document.getElementById('notification');
 const videoElement = document.getElementById('background-video');
 
 // Show notification on page load
 notificationElement.style.opacity = 1;
-notificationElement.innerText = `"Time to roll, player! Bring the heat and own the game. Let’s start this—no mercy!" 🔥🎮
+notificationElement.innerText = `Time to roll, player! Bring the heat and own the game. Let’s start this—no mercy! 🔥🎮
 `;
 
 function changeBackground() {
