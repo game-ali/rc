@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Racing Game</title>
+    <style>
+        body {
+    margin: 0;
+    overflow: hidden;
+    background-color: 87CEEB; /* Light blue color for the ocean */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('pain.bmp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  transform: rotate(360deg); /* Rotate the video 90 degrees to the left */
+}
+}
+
+#gameContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#gameCanvas {
+    border: ;
+    background-image: url('2pac31.jpg');
+    background-size: cover;
+    background-position: center;
+    display: none; /* Hide canvas initially */
+    
+}
+
+#instructions {
+    text-align: center;
+    display: block;
+    background: rgba(255, 255, 255, 0.8); /* Add a background to instructions for visibility */
+    padding: 10px;
+    border-radius: 5px;
+    color: blue;
+}
+
+h1 {
+    color: hotpink;
+}
+
+#gameInfo {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    height: 7%;
+    margin-top: 10px;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 10px; /* Space between buttons */
+}
+
+#arrows {
+    position: absolute;
+    bottom: 8%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8); /* Background for visibility */
+    padding: 10px;
+    border-radius: 5px;
+    right: 5%;
+}
+
+.arrow-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 60px;
+    height: 50px;
+    margin: 5px 0;
+}
+
+.side-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.arrow {
+    width: 50px;
+    height: 50px;
+    background-color: yellow;
+    color: red;
+    border: none;
+    border-radius: 50%; /* Circular shape */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.arrow.gun {
+    position: absolute;
+    left: 5%;
+    bottom: 14%;
+    width: 60px;
+    height: 60px;
+    background-color: yellow;
+    color: red;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: yellow;
+    color: red;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+#soundSelectionContainer {
+    max-width: 100px;
+    margin: auto;
+    padding: 5px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b, #ffcc33);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    right: 10%;
+    top: 10%;
+    transform: translateY(-50%);
+}
+
+#soundSelectionContainer label {
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+#soundSelectionContainer select {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background: repeating-linear-gradient(45deg, #6a11cb, #2575fc 10%);
+    color: #000;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    #gameCanvas {
+        width: 90vw;
+        height: 50vh;
+    }
+
+    #gameInfo {
+        width: 90%;
+        font-size: 16px;
+    }
+
+    .btn, .arrow {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #soundSelectionContainer {
+        top: 5%;
+        right: 5%;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="instructions">
+            <h1>Emoji Racing Game</h1>
+            <h3>Use the arrow keys or on-screen arrows to move. Avoid obstacles and try to get the highest score!</h3>
+            <button class="btn" id="startBtn">Start Game</button>
+        </div>
+        <div id="gameInfo" style="display: none;">
+            <p id="timer">Time: 0s</p>
+            <p id="speed">Speed: 2</p>
+            <p id="points">Points: 0</p>
+            <p id="level">Level: 1</p>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div id="controls" style="display: none;">
+            <button class="btn" id="playBtn">Play</button>
+            <button class="btn" id="pauseBtn">Pause</button>
+            <button class="btn" id="resetBtn">Reset</button>
+        </div>
+        <div id="arrows" style="display: none;">
+            <div class="arrow-container">
+                <button class="arrow" id="upArrow">&#8593;</button>
+            </div>
+            <div class="arrow-container side-container">
+                <button class="arrow" id="leftArrow">&#8592;</button>
+                <button class="arrow" id="rightArrow">&#8594;</button>
+            </div>
+            <div class="arrow-container">
+                <button class="arrow" id="downArrow">&#8595;</button>
+            </div>
+        </div>
+        <button class="arrow gun" id="shoot-button" style="display: none;">🔫</button>
+        <div id="soundSelectionContainer">
+            <label for="backgroundMusicSelect">Choose Music:</label>
+            <select id="backgroundMusicSelect">
+                <option value="jv.mp3">Music 1</option>
+                <option value="o.l.mp3">Music 2</option>
+                <option value="m.n.mp3">Music 3</option>
+            </select>
+        </div>
+        <div id="notification" style="position: fixed; bottom: 20px; right: 20px; background-color: #fff; padding: 10px; border: 1px solid #ddd;"></div>
+        <video autoplay muted loop id="background-video" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+            <source src="v5.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <audio id="backgroundMusic" src="jv.mp3" loop></audio>
+    <script>
+      const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 800;
+canvas.height = 600;
+
+const backgroundMusic = document.getElementById("backgroundMusic");
+const backgroundMusicSelect = document.getElementById("backgroundMusicSelect");
+const timerElement = document.getElementById("timer");
+const speedElement = document.getElementById("speed");
+const pointsElement = document.getElementById("points");
+const levelElement = document.getElementById("level");
+
+const playerImg = new Image();
+playerImg.src = 'car.webp'; // Image URL for the car
+
+const emojis = ["🚜", "🐃", "🚗", "🚜" ,"ali"]; // Array of emojis to use as obstacles
+
+let player = {
+    x: 50,
+    y: canvas.height / 2 - 25,
+    width: 80,
+    height: 50,
+    speed: 5,
+    dx: 0,
+    dy: 0,
+};
+
+let obstacles = [];
+let bullets = [];
+let animationFrameId;
+let gamePaused = false;
+let timeElapsed = 0;
+let gameSpeed = 2;
+let points = 0;
+let level = 1;
+let timerInterval;
+let speedInterval;
+let pointsInterval;
+
+function drawPlayer() {
+    ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+}
+
+function updatePlayer() {
+    player.x += player.dx;
+    player.y += player.dy;
+
+    if (player.x < 0) {
+        player.x = 0;
+    } else if (player.x + player.width > canvas.width) {
+        player.x = canvas.width - player.width;
+    }
+
+    if (player.y < 0) {
+        player.y = 0;
+    } else if (player.y + player.height > canvas.height) {
+        player.y = canvas.height - player.height;
+    }
+}
+
+function drawObstacles() {
+    ctx.font = "40px Arial";
+    obstacles.forEach(obstacle => {
+        ctx.fillText(obstacle.emoji, obstacle.x, obstacle.y);
+    });
+}
+
+function updateObstacles() {
+    obstacles.forEach(obstacle => {
+        obstacle.x -= obstacle.speed;
+        if (obstacle.direction === 'down') {
+            obstacle.y += obstacle.dy;
+            if (obstacle.y > canvas.height - 40) obstacle.direction = 'up';
+        } else {
+            obstacle.y -= obstacle.dy;
+            if (obstacle.y < 0) obstacle.direction = 'down';
+        }
+
+        if (obstacle.x < -40) {
+            obstacles.shift();
+        }
+    });
+}
+
+function createObstacle() {
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    obstacles.push({
+        emoji,
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 40) + 40,
+        speed: gameSpeed,
+        dy: 5,
+        direction: 'down'
+    });
+}
+
+function drawBullets() {
+    bullets.forEach(bullet => {
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+        ctx.closePath();
+    });
+}
+
+function updateBullets() {
+    bullets.forEach((bullet, index) => {
+        bullet.x += bullet.speed;
+        if (bullet.x - bullet.radius > canvas.width) {
+            bullets.splice(index, 1);
+        }
+    });
+}
+
+function detectCollision() {
+    obstacles.forEach((obstacle, obstacleIndex) => {
+        bullets.forEach((bullet, bulletIndex) => {
+            const emojiWidth = 40;
+            const emojiHeight = 40;
+            if (Math.abs(obstacle.x - bullet.x) < emojiWidth / 2 + bullet.radius &&
+                Math.abs(obstacle.y - bullet.y) < emojiHeight / 2 + bullet.radius) {
+                obstacles.splice(obstacleIndex, 1);
+                bullets.splice(bulletIndex, 1);
+                points += 20;
+                updatePoints();
+            }
+        });
+
+        const emojiWidth = 40;
+        const emojiHeight = 40;
+
+        if (Math.abs(player.x - obstacle.x) < player.width / 2 + emojiWidth / 2 &&
+            Math.abs(player.y - obstacle.y) < player.height / 2 + emojiHeight / 2) {
+            endGame();
+        }
+    });
+}
+
+function endGame() {
+    cancelAnimationFrame(animationFrameId);
+    clearInterval(timerInterval);
+    clearInterval(speedInterval);
+    clearInterval(pointsInterval);
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+    alert(`Game Over! You scored ${points} points.`);
+    resetGame();
+}
+
+function resetGame() {
+    player = {
+        x: 50,
+        y: canvas.height / 2 - 25,
+        width: 80,
+        height: 50,
+        speed: 5,
+        dx: 0,
+        dy: 0,
+    };
+    obstacles = [];
+    bullets = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    timeElapsed = 0;
+    gameSpeed = 2;
+    points = 0;
+    level = 1;
+    updateTimer();
+    updateSpeed();
+    updatePoints();
+    updateLevel();
+}
+
+function updateTimer() {
+    timerElement.textContent = `Time: ${timeElapsed}s`;
+}
+
+function updateSpeed() {
+    speedElement.textContent = `Speed: ${gameSpeed}`;
+}
+
+function updatePoints() {
+    pointsElement.textContent = `Points: ${points}`;
+}
+
+function updateLevel() {
+    levelElement.textContent = `Level: ${level}`;
+}
+
+function increaseTime() {
+    timeElapsed += 1;
+    updateTimer();
+}
+
+function increaseSpeed() {
+    gameSpeed += 0.5;
+    obstacles.forEach(obstacle => {
+        obstacle.speed = gameSpeed;
+    });
+    updateSpeed();
+}
+
+function increasePoints() {
+    points += 10;
+    updatePoints();
+    if (points % 100 === 0) {
+        level += 1;
+        updateLevel();
+    }
+}
+
+function handleKeyDown(event) {
+    if (event.key === "ArrowUp" || event.key === "w") {
+        player.dy = -player.speed;
+    } else if (event.key === "ArrowDown" || event.key === "s") {
+        player.dy = player.speed;
+    } else if (event.key === "ArrowLeft" || event.key === "a") {
+        player.dx = -player.speed;
+    } else if (event.key === "ArrowRight" || event.key === "d") {
+        player.dx = player.speed;
+    } else if (event.key === " ") {
+        shootBullet();
+    }
+}
+
+function handleKeyUp(event) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "w" || event.key === "s") {
+        player.dy = 0;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "a" || event.key === "d") {
+        player.dx = 0;
+    }
+}
+
+function handleArrowDown(direction) {
+    if (direction === 'up') {
+        player.dy = -player.speed;
+    } else if (direction === 'down') {
+        player.dy = player.speed;
+    } else if (direction === 'left') {
+        player.dx = -player.speed;
+    } else if (direction === 'right') {
+        player.dx = player.speed;
+    }
+}
+
+function handleArrowUp() {
+    player.dx = 0;
+    player.dy = 0;
+}
+
+function shootBullet() {
+    bullets.push({
+        x: player.x + player.width,
+        y: player.y + player.height / 2,
+        radius: 5,
+        speed: 7
+    });
+}
+
+document.getElementById('shoot-button').addEventListener('click', function() {
+    shootBullet();
+    document.getElementById('shoot-button').disabled = true;
+    setTimeout(function() {
+        document.getElementById('shoot-button').disabled = false;
+    }, 1000);
+    var audio = new Audio('bulletsound.mp3');
+    audio.play();
+});
+
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    updatePlayer();
+    drawObstacles();
+    updateObstacles();
+    drawBullets();
+    updateBullets();
+    detectCollision();
+    animationFrameId = requestAnimationFrame(update);
+}
+
+function lockScreenOrientation() {
+    if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+            console.error('Screen orientation lock failed:', err);
+        });
+    }
+}
+
+function startGame() {
+    document.getElementById('instructions').style.display = 'none';
+    document.getElementById('soundSelectionContainer').style.display = 'none';
+    canvas.style.display = 'block';
+    document.body.classList.add('rotated');
+    document.getElementById('gameInfo').style.display = 'flex';
+    document.getElementById('controls').style.display = 'flex';
+    document.getElementById('arrows').style.display = 'flex';
+    document.getElementById('shoot-button').style.display = 'block';
+    resetGame();
+    setInterval(createObstacle, 2000);
+    timerInterval = setInterval(increaseTime, 1000);
+    speedInterval = setInterval(increaseSpeed, 5000);
+    pointsInterval = setInterval(increasePoints, 1000);
+    update();
+    backgroundMusic.src = backgroundMusicSelect.value;
+    backgroundMusic.play();
+    lockScreenOrientation(); // Lock the screen orientation when game starts
+}
+
+function pauseGame() {
+    if (!gamePaused) {
+        gamePaused = false;
+        cancelAnimationFrame(animationFrameId);
+        clearInterval(timerInterval);
+        clearInterval(speedInterval);
+        clearInterval(pointsInterval);
+        backgroundMusic.pause();
+        alert(`Game paused! You scored ${points} points...waiting on you..`);
+    }
+}
+
+function playGame() {
+    if (gamePaused) {
+        gamePaused = false;
+        backgroundMusic.play();
+        timerInterval = setInterval(increaseTime, 1000);
+        speedInterval = setInterval(increaseSpeed, 10000);
+        pointsInterval = setInterval(increasePoints, 1000);
+        update();
+    }
+}
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('pauseBtn').addEventListener('click', pauseGame);
+document.getElementById('playBtn').addEventListener('click', playGame);
+document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+document.addEventListener("keydown", handleKeyDown);
+document.addEventListener("keyup", handleKeyUp);
+
+document.getElementById('upArrow').addEventListener('mousedown', () => handleArrowDown('up'));
+document.getElementById('downArrow').addEventListener('mousedown', () => handleArrowDown('down'));
+document.getElementById('leftArrow').addEventListener('mousedown', () => handleArrowDown('left'));
+document.getElementById('rightArrow').addEventListener('mousedown', () => handleArrowDown('right'));
+
+// For mobile touch support
+document.getElementById('upArrow').addEventListener('touchstart', () => handleArrowDown('up'));
+document.getElementById('downArrow').addEventListener('touchstart', () => handleArrowDown('down'));
+document.getElementById('leftArrow').addEventListener('touchstart', () => handleArrowDown('left'));
+document.getElementById('rightArrow').addEventListener('touchstart', () => handleArrowDown('right'));
+
+document.getElementById('upArrow').addEventListener('touchend', handleArrowUp);
+document.getElementById('downArrow').addEventListener('touchend', handleArrowUp);
+document.getElementById('leftArrow').addEventListener('touchend', handleArrowUp);
+document.getElementById('rightArrow').addEventListener('touchend', handleArrowUp);
+
+playerImg.onload = () => {
+    update();
+};
+
+let videos = ["v8.mp4", "v6.mp4", "v5.mp4"];//add video here 
+let videoIndex = 0;
+const notificationElement = document.getElementById('notification');
+const videoElement = document.getElementById('background-video');
+
+// Show notification on page load
+notificationElement.style.opacity = 1;
+notificationElement.innerText = `"Time to roll, player! Bring the heat and own the game. Let’s start this—no mercy!" 🔥🎮
+`;
+
+function changeBackground() {
+  videoElement.src = videos[videoIndex];
+  videoElement.play();
+  alert(`Background video changed to: ${videos[videoIndex]}`);
+  notificationElement.innerText = `"Yo, you crushed it! Boss moves all the way. Keep wrecking levels like a legend!" 💥🎮
+
+  NEXT LEVEL
+`;
+setTimeout(() => {
+    notificationElement.style.opacity = 0; // Hide notification after 2 seconds
+  }, 1000);
+  videoIndex = (videoIndex + 1) % videos.length;
+}
+
+// Change every 5 seconds
+setInterval(changeBackground, 50000);
+    </script>
+</body>
+</html>
