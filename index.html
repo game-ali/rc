@@ -616,7 +616,7 @@ playerImg.onload = () => {
     update();
 };
 
-let videos = ["v6.mp4", "v7.mp4", "v5.mp4"];//add video here 
+let videos = ["v6.mp4", "v7.mp6", "v6.mp4"];//add video here 
 let videoIndex = 0;
 const notificationElement = document.getElementById('notification');
 const videoElement = document.getElementById('background-video');
@@ -629,14 +629,14 @@ notificationElement.innerText = `"Time to roll, player! Bring the heat and own t
 function changeBackground() {
   videoElement.src = videos[videoIndex];
   videoElement.play();
-  alert(`Background video changed to: ${videos[videoIndex]}`);
-  notificationElement.innerText = `"Yo, you crushed it! Boss moves all the way. Keep wrecking levels like a legend!" 💥🎮
+  alert(`Hit OK to advance to the next level!🔥 `);
+  notificationElement.innerText = `Yo, you crushed it! Boss moves all the way. Keep wrecking levels like a legend! 💥🎮
 
   NEXT LEVEL
 `;
 setTimeout(() => {
     notificationElement.style.opacity = 0; // Hide notification after 2 seconds
-  }, 1000);
+  }, 3000);
   videoIndex = (videoIndex + 1) % videos.length;
 }
 
