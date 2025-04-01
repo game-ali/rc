@@ -447,7 +447,7 @@ function updateLevel() {
 }
 
 function increaseTime() {
-    timeElapsed += 5;
+    timeElapsed += 1;
     updateTimer();
 }
 
@@ -631,8 +631,9 @@ function changeBackground() {
   videoElement.src = videos[videoIndex];
   videoElement.play();
   alert(`Hit OK to advance to the next level!🔥 `);
-  notificationElement.innerText = Legend mode activated! 💥
-                                             +++NEXT LEVEL+++
+ notificationElement.innerText = `Legend mode activated! 💥💥🎮
+
+  NEXT LEVEL
 `;
 setTimeout(() => {
     notificationElement.style.opacity = 0; // Hide notification after 2 seconds
