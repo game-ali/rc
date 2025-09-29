@@ -1681,7 +1681,7 @@ const videoElement = document.getElementById('background-video');
 
 // Show notification on page load
 notificationElement.style.opacity = 1;
-notificationElement.innerText = `Keep Steedy 🔥🎮
+notificationElement.innerText = `Keep Steedy...
 `;
 
 function changeBackground() {
@@ -1715,7 +1715,7 @@ async function enableRotation() {
       } catch (err) {
         document.getElementById('prompt').innerHTML = `
           <h2>Rotation Failed</h2>
-          <p>.<br>
+          <p><br>
           <button onclick="startAnyway()">Continue</button>
         `;
         console.error(err);
@@ -1729,3 +1729,4 @@ async function enableRotation() {
     </script>
 </body>
 </html>
+
